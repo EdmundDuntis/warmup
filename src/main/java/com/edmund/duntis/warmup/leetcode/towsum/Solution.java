@@ -1,4 +1,4 @@
-package com.edmund.duntis.warmup.leetcode.TowSum;
+package com.edmund.duntis.warmup.leetcode.towsum;
 
 import java.util.HashMap;
 import java.util.Map;
