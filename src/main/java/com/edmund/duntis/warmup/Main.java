@@ -1,8 +1,14 @@
 package com.edmund.duntis.warmup;
 
+
+
 public class Main {
 
 	public static int bs(int[] nums, int target) {
+		
+		String[] s=new String[2];
+		
+
 
 		int begin = 0;
 		int end = nums.length - 1;
