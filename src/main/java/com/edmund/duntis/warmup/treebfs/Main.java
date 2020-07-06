@@ -12,7 +12,7 @@ public class Main {
 		if (root == null) {
 			return;
 		}
-		
+
 		queue.add(root);
 
 		while (!queue.isEmpty()) {
