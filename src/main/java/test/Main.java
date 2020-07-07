@@ -20,7 +20,7 @@ public class Main {
 		Random rand = new Random(System.currentTimeMillis());
 
 		Thread producer = new Thread(() -> {
-			while (true) {
+			while (true) { // 生产者一直生产
 				// 加入一些随机量
 				int i = rand.nextInt(800);
 				try {
@@ -32,14 +32,16 @@ public class Main {
 				try {
 					lock.lock();
 					System.out.println("size:" + queue.size());
-					if (queue.size() < maxSize) {
-						queue.offer(String.valueOf(i));
-						System.out.println("offer:" + i);
-						notEmpty.signalAll();
-					} else {
+
+					while (queue.size() == maxSize) { // 如果满了，等待未满的信号
 						System.out.println("full:" + queue.size());
 						notFull.await();
 					}
+
+					// 未满的情况下进行生产
+					queue.offer(String.valueOf(i));
+					System.out.println("offer:" + i);
+					notEmpty.signalAll();
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
@@ -48,7 +50,7 @@ public class Main {
 			}
 		});
 
-		Thread consumer = new Thread(() -> {
+		Thread consumer = new Thread(() -> { // 消费者一直消费
 			while (true) {
 				// 加入一些随机量
 				int i = rand.nextInt(1000);
@@ -60,14 +62,15 @@ public class Main {
 
 				try {
 					lock.lock();
-					if (!queue.isEmpty()) {
-						String e = queue.poll();
-						System.out.println("poll:" + e);
-						notFull.signalAll();
-					} else {
+					while (queue.isEmpty()) { // 如果空了，等待变成非空的信号
 						System.out.println("empty:" + queue.size());
 						notEmpty.await();
 					}
+
+					// 如果非空的情况下进行消费
+					String e = queue.poll();
+					System.out.println("poll:" + e);
+					notFull.signalAll();
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
